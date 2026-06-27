@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAS College - Fee Payment</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+  .box { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h1 { text-align: center; color: #0a7a0a; }
+  p { text-align: center; font-size: 14px; color: #555; }
+  label { display: block; margin-top: 12px; font-weight: bold; }
+  input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; }
+  .btn { width: 48%; padding: 14px; margin-top: 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; color: #fff; cursor: pointer; }
+  .daily { background: #0a7a0a; }
+  .monthly { background: #003366; }
+  .btns { display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>KAS College</h1>
+    <p>Kenya Accountants and Secretarial College<br>Education Fee Payment</p>
+
+    <label>Full Name</label>
+    <input type="text" id="name" placeholder="Enter your full name" required>
+
+    <label>Phone Number</label>
+    <input type="tel" id="phone" placeholder="07XXXXXXXX" required>
+
+    <div class="btns">
+      <button class="btn daily" id="btnDaily">Pay Daily<br>KES 20</button>
+      <button class="btn monthly" id="btnMonthly">Pay Monthly<br>KES 500</button>
+    </div>
+  </div>
+
+<script src="config.js"></script>
+<script>
+document.getElementById('btnDaily').innerHTML = `Pay Daily<br>KES ${KAS_CONFIG.dailyAmount}`;
+document.getElementById('btnMonthly').innerHTML = `Pay Monthly<br>KES ${KAS_CONFIG.monthlyAmount}`;
+document.getElementById('btnDaily').onclick = () => pay(KAS_CONFIG.dailyAmount);
+document.getElementById('btnMonthly').onclick = () => pay(KAS_CONFIG.monthlyAmount);
+
+function pay(amount) {
+  let name = document.getElementById('name').value;
+  let phone = document.getElementById('phone').value;
+  if (!name || !phone) { alert('Please enter your Name and Phone Number first.'); return; }
+  let reference = phone;
+  let url = `${KAS_CONFIG.payheroLink}?amount=${amount}&phone=${phone}&name=${encodeURIComponent(name)}&reference=${reference}`;
+  window.location.href = url;
+}
+</script>
+</body>
+</html>
