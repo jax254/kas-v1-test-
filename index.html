@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS - Knowledge & Skills</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        .box { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #0a7a0a; margin-top: 0; }
+        p { text-align: center; font-size: 14px; color: #555; }
+        
+        /* Dynamic Pricing Banner Style */
+        .price-banner { background: #e6f2ff; padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-weight: bold; color: #003366; border: 1px solid #b3d7ff; }
+        
+        /* Search Layout */
+        .search-group { display: flex; gap: 8px; margin-bottom: 15px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+        .btn { padding: 12px 20px; background: #0a7a0a; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .btn:hover { background: #086108; }
+        
+        /* Prudence Response Container */
+        .response-box { margin-top: 20px; display: none; padding: 15px; border-left: 4px solid #003366; background: #f9f9f9; border-radius: 0 8px 8px 0; }
+        .response-box h4 { margin: 0 0 10px 0; color: #003366; font-size: 16px; }
+        .response-text { line-height: 1.6; color: #333; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🎓 KAS - Knowledge & Skills</h2>
+    <p>Master your skills, secure your career.</p>
+
+    <!-- This banner updates dynamically from your settings object -->
+    <div id="priceTierBanner" class="price-banner">
+        Loading active subscription offers...
+    </div>
+
+    <!-- Prudence Search Bar Interlocking Interface -->
+    <div class="search-group">
+        <input type="text" id="prudenceInput" placeholder="Ask Prudence about setbooks, coding, finance...">
+        <button class="btn" onclick="askPrudenceEngine()">Ask Prudence 📖</button>
+    </div>
+
+    <!-- Hidden response board until user asks a question -->
+    <div id="prudenceOutputArea" class="response-box">
+        <h4>📖 Prudence Intelligence Report:</h4>
+        <div id="prudenceResponseText" class="response-text"></div>
+    </div>
+</div>
+
+<script>
+// Your centralized dashboard control configurations
+const KAS_APP_SETTINGS = {
+    fallbackStudentPrice: 299
+};
+
+// Auto-loads parameters as soon as the student hits the page
+document.addEventListener("DOMContentLoaded", () => {
+    updateDynamicPricingUI();
+});
+
+function updateDynamicPricingUI() {
+    const banner = document.getElementById("priceTierBanner");
+    const currentPrice = KAS_APP_SETTINGS.fallbackStudentPrice;
+    banner.innerHTML = `🚀 Limited Offer: 3-Day Free Trial then only KES ${currentPrice}/month!`;
+}
+
+async function askPrudenceEngine() {
+    const query = document.getElementById("prudenceInput").value.trim();
+    const outputArea = document.getElementById("prudenceOutputArea");
+    const responseText = document.getElementById("prudenceResponseText");
+
+    if (!query) {
+        alert("Baido, please enter a study topic or book name first!");
+        return;
+    }
+
+    outputArea.style.display = "block";
+    responseText.innerHTML = `<i>Prudence is compiling Oxford-standard notes for "${query}"... Please wait...</i>`;
+
+    // High-yield engine prototype simulator
+    setTimeout(() => {
+        responseText.innerHTML = `
+            <p><strong>Synopsis:</strong> A concise high-yield conceptual summary tailored perfectly for <strong>"${query}"</strong>.</p>
+            <p><strong>Themes & Analysis:</strong> Strategic application, structural evaluation metrics, and integration frameworks matching professional execution lines.</p>
+            <p><strong>🎯 Exam/Interview Prep Question:</strong><br>
+            <em>How do you implement this efficiently under strict timelines?</em><br>
+            <strong>Answer:</strong> Isolate core performance metrics systematically and review output lines against fundamental rules.</p>
+        `;
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
