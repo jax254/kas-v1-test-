@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS Admin Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b111e;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 15px;
+        }
+        .admin-container {
+            max-width: 480px;
+            margin: 20px auto;
+            background: #141d2f;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .session-subtitle {
+            text-align: center;
+            color: #4ade80;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .section-card {
+            background: #1a2436;
+            border: 1px solid #26354a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .badge-status {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-super { background: #ef4444; color: white; }
+        .badge-allow { background: #38bdf8; color: #0b111e; }
+        .badge-pending { background: #f59e0b; color: #0b111e; }
+        
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; }
+        input, select {
+            width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155;
+            color: white; border-radius: 6px; box-sizing: border-box; font-size: 14px;
+        }
+        input:focus, select:focus { border-color: #38bdf8; outline: none; }
+        
+        .btn-blue {
+            width: 100%; padding: 12px; background: #2b7bb9; color: white;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px;
+            margin-top: 5px; transition: background 0.2s;
+        }
+        .btn-blue:hover { background: #1d6199; }
+        
+        .roster-item, .request-item {
+            padding: 12px; background: #0f172a; border-radius: 6px;
+            margin-bottom: 8px; border: 1px solid #26354a; font-size: 13px;
+        }
+        .request-item div { margin-bottom: 8px; }
+        .action-container { display: flex; gap: 8px; }
+        .btn-action {
+            flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+        .btn-approve { background: #10b981; color: white; }
+        .btn-reject { background: #ef4444; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+
+    <div id="gatekeeperView" style="text-align: center; padding: 20px 0;">
+        <h2 style="color: #38bdf8; margin-bottom: 5px;">🔐 KAS Gatekeeper</h2>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Enter Admin Authorization PIN</p>
+        <input type="password" id="gatekeeperPin" placeholder="••••" style="text-align:center; font-size:24px; letter-spacing:10px; max-width: 200px; margin-bottom: 20px;" maxlength="4">
+        <button class="btn-blue" onclick="unlockDashboard()">Verify Credentials</button>
+    </div>
+
+    <div id="dashboardView" style="display: none;">
+        <div class="header-title">⚡ KAS Admin Engine</div>
+        <div class="session-subtitle" id="currentSessionLabel">Current Session: Super Admin Mode</div>
+        
+        <div class="section-card super-admin-only" id="approvalQueueCard">
+            <span class="badge-status badge-pending">Action Required</span>
+            <div class="section-title">📥 Change Requests Pending Approval</div>
+            <div id="queueContainer">
+                </div>
+        </div>
+
+        <div class="section-card">
+            <span class="badge-status badge-allow" id="priceBadge">Edit Allowed</span>
+            <div class="section-title">⚙️ Global Price Controls</div>
+            <div class="form-group">
+                <label>Daily Price (KES)</label>
+                <input type="number" id="dailyInput" value="10">
+            </div>
+            <div class="form-group">
+                <label>Monthly Price (KES)</label>
+                <input type="number" id="monthlyInput" value="300">
+            </div>
+            <button class="btn-blue" id="btnSavePrices" onclick="processSubmit()">Submit Changes</button>
+        </div>
+
+        <div class="section-card">
+            <span class="badge-status badge-allow" id="bannerBadge">Edit Allowed</span>
+            <div class="section-title">🎨 Banner & Season Management</div>
+            <div class="form-group">
+                <label>Banner Header Text</label>
+                <input type="text" id="bannerInput" value="⚽ FOOTBALL SEASON IS LIVE 🏆">
+            </div>
+            <button class="btn-blue" id="btnSaveBanner" onclick="processSubmit()">Submit Changes</button>
+        </div>
+
+        <div class="section-card super-admin-only">
+            <span class="badge-status badge-super">Super Admin Only</span>
+            <div class="section-title">🔑 Provision New Admin</div>
+            <div class="form-group">
+                <label>Admin Name</label>
+                <input type="text" id="newAdminName" placeholder="Enter full name">
+            </div>
+            <div class="form-group">
+                <label>Assigned Permission Tier</label>
+                <select id="permissionTier">
+                    <option value="Manager">Manager (Requires Approval)</option>
+                </select>
+            </div>
+            <button class="btn-blue" onclick="provisionNewAdmin()">Generate Access Key</button>
+        </div>
+
+        <div class="section-card super-admin-only">
+            <div class="section-title">👥 Active Admins Roster</div>
+            <div id="adminRosterContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const MASTER_PIN = "2540";
+    let currentAdminRole = "manager"; 
+    let currentAdminName = "";
+
+    function getSubAdmins() {
+        return localStorage.getItem('kasSubAdmins') ? JSON.parse(localStorage.getItem('kasSubAdmins')) : [];
+    }
+
+    function getRequests() {
+        return localStorage.getItem('kasApprovalRequests') ? JSON.parse(localStorage.getItem('kasApprovalRequests')) : [];
+    }
+
+    function unlockDashboard() {
+        const pin = document.getElementById("gatekeeperPin").value.trim();
+        const subAdmins = getSubAdmins();
+        const matchingSub = subAdmins.find(admin => admin.pin === pin);
+
+        if (pin === MASTER_PIN) {
+            currentAdminRole = "super";
+            currentAdminName = "Jesse Kasamba";
+            document.getElementById("currentSessionLabel").innerText = "Current Session: Jesse Kasamba (Super Admin)";
+            document.querySelectorAll('.super-admin-only').forEach(el => el.style.display = 'block');
+            document.getElementById("priceBadge").innerText = "Direct Edit";
+            document.getElementById("bannerBadge").innerText = "Direct Edit";
+            document.getElementById("btnSavePrices").innerText = "Apply Instantly Live 🚀";
+            document.getElementById("btnSaveBanner").innerText = "Apply Instantly Live 🚀";
+            showPanel();
+        } else if (matchingSub) {
+            currentAdminRole = "manager";
+            currentAdminName = matchingSub.name;
+            document.getElementById("currentSessionLabel").innerText = `Current Session: ${matchingSub.name} (Manager)`;
+            document.querySelectorAll('.super-admin-only').forEach(el => el.style.display = 'none');
+            document.getElementById("priceBadge").innerText = "Requires Approval";
+            document.getElementById("bannerBadge").innerText = "Requires Approval";
+            document.getElementById("btnSavePrices").innerText = "Submit to Jesse for Review 📥";
+            document.getElementById("btnSaveBanner").innerText = "Submit to Jesse for Review 📥";
+            showPanel();
+        } else {
+            alert("❌ Access Denied: Invalid PIN.");
+        }
+    }
+
+    function showPanel() {
+        document.getElementById("gatekeeperView").style.display = "none";
+        document.getElementById("dashboardView").style.display = "block";
+        
+        document.getElementById('dailyInput').value = localStorage.getItem('dailyPrice') || "10";
+        document.getElementById('monthlyInput').value = localStorage.getItem('monthlyPrice') || "300";
+        document.getElementById('bannerInput').value = localStorage.getItem('broadcastMessage') || "⚽ FOOTBALL SEASON IS LIVE 🏆";
+        
+        renderQueue();
+        renderRoster();
+    }
+
+    function processSubmit() {
+        const dPrice = document.getElementById("dailyInput").value;
+        const mPrice = document.getElementById("monthlyInput").value;
+        const bText = document.getElementById("bannerInput").value;
+
+        if (currentAdminRole === "super") {
+            localStorage.setItem('dailyPrice', dPrice);
+            localStorage.setItem('monthlyPrice', mPrice);
+            localStorage.setItem('broadcastMessage', bText);
+            alert("🚀 System updated immediately!");
+        } else {
+            const requests = getRequests();
+            requests.push({
+                id: Date.now(),
+                by: currentAdminName,
+                daily: dPrice,
+                monthly: mPrice,
+                banner: bText
+            });
+            localStorage.setItem('kasApprovalRequests', JSON.stringify(requests));
+            alert("📥 Submitted! Your updates are pending review and approval by Jesse Kasamba.");
+        }
+    }
+
+    function handleRequest(id, action) {
+        let requests = getRequests();
+        const req = requests.find(r => r.id === id);
+
+        if (action === 'approve' && req) {
+            localStorage.setItem('dailyPrice', req.daily);
+            localStorage.setItem('monthlyPrice', req.monthly);
+            localStorage.setItem('broadcastMessage', req.banner);
+            alert("✅ Request approved and published live!");
+        } else if (action === 'reject') {
+            alert("❌ Request rejected and cleared.");
+        }
+
+        requests = requests.filter(r => r.id !== id);
+        localStorage.setItem('kasApprovalRequests', JSON.stringify(requests));
+        renderQueue();
+        
+        document.getElementById('dailyInput').value = localStorage.getItem('dailyPrice');
+        document.getElementById('monthlyInput').value = localStorage.getItem('monthlyPrice');
+        document.getElementById('bannerInput').value = localStorage.getItem('broadcastMessage');
+    }
+
+    function renderQueue() {
+        const container = document.getElementById("queueContainer");
+        const requests = getRequests();
+
+        if (currentAdminRole !== "super") return;
+
+        if (requests.length === 0) {
+            container.innerHTML = `<p style="color: #94a3b8; font-size: 13px; text-align: center; margin: 10px 0;">No pending change requests.</p>`;
+            return;
+        }
+
+        container.innerHTML = requests.map(req => `
+            <div class="request-item">
+                <div><strong>Submitted by:</strong> ${req.by}</div>
+                <div style="color: #38bdf8;">• Proposed Prices: ${req.daily} KES / ${req.monthly} KES</div>
+                <div style="color: #e2e8f0;">• Proposed Banner: "${req.banner}"</div>
+                <div class="action-container">
+                    <button class="btn-action btn-approve" onclick="handleRequest(${req.id}, 'approve')">Approve & Publish</button>
+                    <button class="btn-action btn-reject" onclick="handleRequest(${req.id}, 'reject')">Reject</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function provisionNewAdmin() {
+        const nameInput = document.getElementById("newAdminName");
+        const name = nameInput.value.trim();
+        if (!name) return alert("Please enter a name.");
+
+        let generatedPin;
+        do { generatedPin = Math.floor(1000 + Math.random() * 9000).toString(); } while (generatedPin === MASTER_PIN);
+
+        const subAdmins = getSubAdmins();
+        subAdmins.push({ name, pin: generatedPin });
+        localStorage.setItem('kasSubAdmins', JSON.stringify(subAdmins));
+
+        alert(`🔑 Account Created!\n\nName: ${name}\nPIN Key: ${generatedPin}`);
+        nameInput.value = "";
+        renderRoster();
+    }
+
+    function removeAdmin(pin) {
+        if (confirm("Revoke access permissions?")) {
+            let subAdmins = getSubAdmins();
+            subAdmins = subAdmins.filter(a => a.pin !== pin);
+            localStorage.setItem('kasSubAdmins', JSON.stringify(subAdmins));
+            renderRoster();
+        }
+    }
+
+    function renderRoster() {
+        const container = document.getElementById("adminRosterContainer");
+        const subAdmins = getSubAdmins();
+        if (subAdmins.length === 0) {
+            container.innerHTML = `<p style="color: #94a3b8; text-align: center; font-size:13px;">No assistants added yet.</p>`;
+            return;
+        }
+        container.innerHTML = subAdmins.map(a => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px; background:#0f172a; padding:8px; border-radius:4px; font-size:13px;">
+                <div><strong>${a.name}</strong><br><span style="color:#a3e635;">PIN: ${a.pin}</span></div>
+                <button onclick="removeAdmin('${a.pin}')" style="background:#ef4444; color:white; border:none; border-radius:4px; padding:4px 8px; font-weight:bold; cursor:pointer;">Delete</button>
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>
