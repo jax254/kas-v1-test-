@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS - Knowledge & Skills</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; padding-bottom: 100px; }
+        .box { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        h2 { text-align: center; color: #003366; margin-top: 15px; }
+        p { text-align: center; font-size: 14px; color: #555; }
+        
+        /* Dynamic Google Doodle Live Banner Area */
+        .seasonal-doodle-banner {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #1d4ed8;
+            min-height: 100px;
+        }
+        
+        .doodle-content {
+            position: relative;
+            z-index: 2;
+        }
+        .seasonal-doodle-banner h3 { margin: 0 0 8px 0; font-size: 18px; letter-spacing: 1px; color: #38bdf8; }
+        .seasonal-doodle-banner p { margin: 0; color: #e6f2ff; font-weight: bold; font-size: 13px; line-height: 1.4; }
+
+        /* --- Pitch Field & Interactive Animations --- */
+        .pitch-field {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background: rgba(16, 185, 129, 0.2);
+            border-top: 1px dashed rgba(255,255,255,0.3);
+            z-index: 1;
+        }
+
+        /* Moving Football Animation */
+        .live-football {
+            position: absolute;
+            bottom: 8px;
+            left: 10%;
+            font-size: 18px;
+            z-index: 3;
+            animation: bounceAndRoll 5s linear infinite;
+        }
+
+        /* Legend Footballer Avatar Animation */
+        .player-avatar {
+            position: absolute;
+            bottom: 5px;
+            left: 5%;
+            font-size: 24px;
+            z-index: 3;
+            animation: playerMove 5s ease-in-out infinite;
+        }
+
+        /* CSS Animation Timelines */
+        @keyframes bounceAndRoll {
+            0% { left: 12%; transform: rotate(0deg) translateY(0px); }
+            25% { transform: rotate(180deg) translateY(-12px); }
+            50% { left: 85%; transform: rotate(360deg) translateY(0px); }
+            75% { transform: rotate(540deg) translateY(-12px); }
+            100% { left: 12%; transform: rotate(720deg) translateY(0px); }
+        }
+
+        @keyframes playerMove {
+            0% { left: 4%; transform: scaleX(1); }
+            45% { left: 15%; transform: scaleX(1); }
+            50% { left: 15%; transform: scaleX(-1); } /* Turn around */
+            95% { left: 4%; transform: scaleX(-1); }
+            100% { left: 4%; transform: scaleX(1); }
+        }
+
+        /* Payhero Payment Section Layout */
+        .payment-section { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 20px; }
+        .payment-section h3 { margin-top: 0; color: #0a7a0a; font-size: 16px; text-align: center; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-pay { width: 100%; padding: 12px; background: #0a7a0a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; text-align: center; text-decoration: none; display: block; }
+        .btn-pay:hover { background: #086108; }
+
+        /* Mascot Widget Layout */
+        #prudence-mascot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            background: #003366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            z-index: 1000;
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 15px #00ffcc;
+        }
+
+        /* Chat Window Overlay */
+        #chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 320px;
+            max-width: 90%;
+            height: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .chat-header { background: #003366; color: white; padding: 12px; font-weight: bold; }
+        .chat-body { flex: 1; padding: 12px; overflow-y: auto; background: #f9f9f9; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
+        .msg.user { background: #e2f0d9; align-self: flex-end; color: #086108; }
+        .msg.prudence { background: #e6f2ff; align-self: flex-start; color: #003366; border-left: 3px solid #003366; }
+        .chat-footer { padding: 10px; display: flex; gap: 6px; border-top: 1px solid #eee; background: white; }
+        .chat-footer input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+        .chat-footer button { background: #003366; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div id="seasonalDoodle" class="seasonal-doodle-banner">
+        <div class="doodle-content">
+            <h3 id="doodleTitle">⚽ FOOTBALL SEASON IS LIVE 🏆</h3>
+            <p id="doodleText">Score High in Your Engineering, Business & Medicine Courses.</p>
+        </div>
+        
+        <div class="player-avatar">🏃‍♂️</div>
+        <div class="live-football">⚽</div>
+        <div class="pitch-field"></div>
+    </div>
+
+    <h2>🎓 KAS - Knowledge & Skills</h2>
+    <p>Master your skills, secure your career.</p>
+
+    <div class="payment-section">
+        <h3>🔒 Secure Access Activation</h3>
+        
+        <div class="form-group">
+            <label for="clientName">Full Name</label>
+            <input type="text" id="clientName" placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+            <label for="premiumPackage">Select Plan</label>
+            <select id="premiumPackage" onchange="updateAmountField()">
+                <option value="300">Monthly Pass — KES 300</option>
+                <option value="10">Daily Basic Sprint — KES 10</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="paymentAmount">Amount (KES)</label>
+            <input type="number" id="paymentAmount" value="300" disabled style="background: #eee; font-weight: bold; color: #333;">
+        </div>
+
+        <button class="btn-pay" onclick="redirectToPayhero()">Proceed to Lipwa Payment 🚀</button>
+    </div>
+</div>
+
+<div id="prudence-mascot" onclick="toggleChatWindow()">📖</div>
+
+<div id="chat-window">
+    <div class="chat-header">📖 Prudence AI Assistant</div>
+    <div class="chat-body" id="chatBody">
+        <div class="msg prudence">Hey, I'm Prudence! What do you want to learn today? Ask me anything about your course units!</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Type your question here...">
+        <button onclick="sendMessageToPrudence()">Ask 📖</button>
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+function updateAmountField() {
+    const packageSelect = document.getElementById("premiumPackage");
+    document.getElementById("paymentAmount").value = packageSelect.value;
+}
+
+function redirectToPayhero() {
+    const name = document.getElementById("clientName").value.trim();
+    if (!name) {
+        alert("Please enter your name before completing the payment activation.");
+        return;
+    }
+    const targetUrl = typeof KAS_CONFIG !== 'undefined' ? KAS_CONFIG.payheroLink : "https://lipwa.link/10354";
+    alert(`Redirecting ${name} to our official Payhero processor securely...`);
+    window.location.href = targetUrl;
+}
+
+function toggleChatWindow() {
+    const chatWin = document.getElementById("chat-window");
+    chatWin.style.display = (chatWin.style.display === "none" || chatWin.style.display === "") ? "flex" : "none";
+}
+
+function sendMessageToPrudence() {
+    const input = document.getElementById("chatInput");
+    const chatBody = document.getElementById("chatBody");
+    const query = input.value.trim();
+    if (!query) return;
+
+    chatBody.innerHTML += `<div class="msg user">${query}</div>`;
+    input.value = "";
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    setTimeout(() => {
+        let dynamicReply = `Regarding your inquiry on "${query}", please ensure you have completed your subscription activation step using the Payhero panel above to unlock the learning matrix.`;
+        chatBody.innerHTML += `<div class="msg prudence">${dynamicReply}</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }, 1000);
+}
+</script>
+
+</body>
+</html>
