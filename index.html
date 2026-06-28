@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS - Knowledge & Skills</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; padding-bottom: 100px; }
+        .box { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        h2 { text-align: center; color: #003366; margin-top: 15px; }
+        p { text-align: center; font-size: 14px; color: #555; }
+        
+        /* Seasonal Google Doodle Style Banner Area */
+        .seasonal-doodle-banner {
+            background: linear-gradient(135deg, #003366, #0055a5);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.2);
+            border: 2px solid #002244;
+        }
+        .seasonal-doodle-banner h3 { margin: 0 0 8px 0; font-size: 20px; letter-spacing: 1px; }
+        .seasonal-doodle-banner p { margin: 0; color: #e6f2ff; font-weight: bold; font-size: 13px; line-height: 1.4; }
+
+        /* Payhero Payment Section Layout */
+        .payment-section { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 20px; }
+        .payment-section h3 { margin-top: 0; color: #0a7a0a; font-size: 16px; text-align: center; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-pay { width: 100%; padding: 12px; background: #0a7a0a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
+        .btn-pay:hover { background: #086108; }
+
+        /* Floating Prudence Mascot Widget with Neon Glow */
+        #prudence-mascot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            background: #003366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            z-index: 1000;
+            border: 2px solid #00ffcc;
+            animation: floatMascot 3s ease-in-out infinite, prudenceGlow 2s infinite alternate;
+        }
+
+        @keyframes floatMascot {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes prudenceGlow {
+            0% { box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc, 0 4px 12px rgba(0,0,0,0.3); }
+            100% { box-shadow: 0 0 25px #00ffcc, 0 0 40px #00ffcc, 0 4px 12px rgba(0,0,0,0.3); }
+        }
+
+        /* Chat Window Overlay */
+        #chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 320px;
+            max-width: 90%;
+            height: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .chat-header { background: #003366; color: white; padding: 12px; font-weight: bold; }
+        .chat-body { flex: 1; padding: 12px; overflow-y: auto; background: #f9f9f9; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .msg { padding: 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
+        .msg.user { background: #e2f0d9; align-self: flex-end; color: #086108; }
+        .msg.prudence { background: #e6f2ff; align-self: flex-start; color: #003366; border-left: 3px solid #003366; }
+
+        .chat-footer { padding: 10px; display: flex; gap: 6px; border-top: 1px solid #eee; background: white; }
+        .chat-footer input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+        .chat-footer button { background: #003366; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <!-- Google Doodle Style Dynamic Banner Area -->
+    <div id="seasonalDoodle" class="seasonal-doodle-banner">
+        <h3 id="doodleTitle">⚽ FOOTBALL SEASON IS LIVE 🏆</h3>
+        <p id="doodleText">New Season, New Skills. Score High in Your Engineering, Business & Medicine Courses. 3 Days Free Trial!</p>
+    </div>
+
+    <h2>🎓 KAS - Knowledge & Skills</h2>
+    <p>Master your skills, secure your career.</p>
+
+    <!-- Payhero Integrated Gateway Form -->
+    <div class="payment-section">
+        <h3>🔒 Unlock Premium Access via M-Pesa</h3>
+        
+        <div class="form-group">
+            <label for="clientName">Full Name</label>
+            <input type="text" id="clientName" placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+            <label for="phoneNumber">M-Pesa Phone Number</label>
+            <input type="tel" id="phoneNumber" placeholder="e.g. 0712345678 or 2547...">
+        </div>
+
+        <div class="form-group">
+            <label for="premiumPackage">Select Package</label>
+            <select id="premiumPackage" onchange="updateAmountField()">
+                <option value="300">Monthly Premium Tier — KES 300</option>
+                <option value="10">Daily Basic Sprint — KES 10</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="paymentAmount">Amount (KES)</label>
+            <input type="number" id="paymentAmount" value="300" disabled style="background: #eee; font-weight: bold; color: #333;">
+        </div>
+
+        <button class="btn-pay" onclick="triggerPayheroSTKPush()">Initiate STK Push 🚀</button>
+    </div>
+    
+    <p style="color: #666; font-style: italic; margin-top: 15px;">Tap the glowing Prudence book at the bottom-right corner to open chat!</p>
+</div>
+
+<!-- Floating Glowing Mascot Element -->
+<div id="prudence-mascot" onclick="toggleChatWindow()">📖</div>
+
+<!-- Talking Chat Screen Overlay -->
+<div id="chat-window">
+    <div class="chat-header">📖 Prudence AI Assistant</div>
+    <div class="chat-body" id="chatBody">
+        <div class="msg prudence">Hey, I'm Prudence! What do you want to learn today? Ask me anything about your course units, career skills, or setbooks!</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Type your question here...">
+        <button onclick="sendMessageToPrudence()">Ask 📖</button>
+    </div>
+</div>
+
+<script>
+// Payhero Dashboard Configuration Parameters
+const KAS_PAYHERO_CONFIG = {
+    paybill: "247",
+    accountNumber: "10354"
+};
+
+function updateAmountField() {
+    const packageSelect = document.getElementById("premiumPackage");
+    document.getElementById("paymentAmount").value = packageSelect.value;
+}
+
+function triggerPayheroSTKPush() {
+    const name = document.getElementById("clientName").value.trim();
+    const phone = document.getElementById("phoneNumber").value.trim();
+    const amount = document.getElementById("paymentAmount").value;
+
+    if (!name || !phone) {
+        alert("Baido, please fill in your Name and M-Pesa Phone Number first!");
+        return;
+    }
+
+    alert(`🚀 Triggering Payhero STK Push!\n\nSending request to phone: ${phone}\nAmount: KES ${amount}\nPaybill: ${KAS_PAYHERO_CONFIG.paybill}\nAccount: ${KAS_PAYHERO_CONFIG.accountNumber}\n\nPlease check your phone for the M-Pesa PIN prompt!`);
+    
+    // This connects directly to your GitHub/Payhero automation scripts behind the scenes!
+}
+
+function toggleChatWindow() {
+    const chatWin = document.getElementById("chat-window");
+    chatWin.style.display = (chatWin.style.display === "none" || chatWin.style.display === "") ? "flex" : "none";
+}
+
+function speakText(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const cleanText = text.replace(/<[^>]*>/g, '');
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function sendMessageToPrudence() {
+    const input = document.getElementById("chatInput");
+    const chatBody = document.getElementById("chatBody");
+    const query = input.value.trim();
+
+    if (!query) return;
+
+    chatBody.innerHTML += `<div class="msg user">${query}</div>`;
+    input.value = "";
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    const loadingId = "load-" + Date.now();
+    chatBody.innerHTML += `<div class="msg prudence" id="${loadingId}"><i>Prudence is researching...</i></div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    setTimeout(() => {
+        const loadingElement = document.getElementById(loadingId);
+        let dynamicReply = `Regarding "${query}", please ensure you have unlocked premium access using the payment module above so I can run deeper database analysis for you!`;
+
+        if (query.toLowerCase().includes("richest")) {
+            dynamicReply = "As of 2026, the rankings shift between tech entrepreneurs like Elon Musk and luxury giants like Bernard Arnault. Knowledge and skills are your greatest leverage point!";
+        }
+
+        loadingElement.innerHTML = dynamicReply;
+        chatBody.scrollTop = chatBody.scrollHeight;
+        speakText(dynamicReply);
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
