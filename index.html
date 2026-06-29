@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarly Network Terminal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0b0f19;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ⚡ MOVING CLIPPERS TICKER */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: rgba(6, 12, 24, 0.95);
+            border-bottom: 2px solid #ffcc00;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+            padding: 12px 0;
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+        }
+
+        .ticker:hover {
+            animation-play-state: paused;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ffcc00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .ticker-item::after {
+            content: " •";
+            color: #00ffff;
+            padding-left: 2rem;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* SECURITY CONSOLE ACTIVE HEADER */
+        .security-header {
+            border: 1px solid #00ff66;
+            background-color: rgba(0, 255, 102, 0.05);
+            color: #00ff66;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            width: fit-content;
+            margin: 20px auto 0 auto;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* TERMINAL INTERFACE CARD */
+        .terminal-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .terminal-card {
+            background: rgba(13, 22, 38, 0.95);
+            border: 2px solid #8a2be2; /* Glowing purple border */
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .terminal-title {
+            color: #00ffff;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+            line-height: 1.4;
+        }
+
+        /* TAB NAVIGATION MODULE */
+        .tab-control {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #8a2be2; /* Matching purple terminal color */
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 50%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab-btn.active {
+            color: #00ffff;
+            border-bottom: 3px solid #00ffff;
+        }
+
+        /* INPUT CONFIGURATIONS */
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #8fa0bc;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #162235;
+            border: 1px solid #2c3e5d;
+            border-radius: 6px;
+            padding: 12px 15px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        /* INTERACTIVE BUTTON */
+        .action-btn {
+            width: 100%;
+            background: #00aeef;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 174, 239, 0.3);
+        }
+
+        .action-btn:hover {
+            background: #00ffff;
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.6);
+        }
+
+        /* FLOATING COMPONENT BUTTON (IMAGE ANCHOR) */
+        .floating-icon {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            background: #162235;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            cursor: pointer;
+        }
+
+        .floating-icon img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+
+        #feedback-log {
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+        .success-msg { color: #00ff66; }
+        .error-msg { color: #ff3333; }
+    </style>
+</head>
+<body>
+
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span class="ticker-item">⚡ COHORTS RECRUITMENT LIVE (2026/2027)</span>
+            <span class="ticker-item">🌐 GLOBAL BUSINESS MODULE ONLINE</span>
+            <span class="ticker-item">🔒 SECURE LAYER ACCESS AUTHENTICATED</span>
+        </div>
+    </div>
+
+    <div class="security-header">⚡ SECURITY ENGINE CONSOLE ACTIVE</div>
+
+    <div class="terminal-container">
+        <div class="terminal-card">
+            <h2 class="terminal-title">SCHOLARLY NETWORK<br>TERMINAL</h2>
+            
+            <div class="tab-control">
+                <button class="tab-btn active" id="tab-signin" onclick="switchTab('signin')">Initialize Sign-In</button>
+                <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Provision Profile</button>
+            </div>
+
+            <form id="terminal-form" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label id="email-label">Institutional Email Node</label>
+                    <input type="email" id="email" class="form-control" placeholder="user@domain.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Secret Password Passkey</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••" required>
+                </div>
+
+                <button type="submit" class="action-btn" id="submit-btn">Boot Platform Node</button>
+            </form>
+
+            <div id="feedback-log"></div>
+        </div>
+    </div>
+
+    <div class="floating-icon" onclick="alert('System utility index fully loaded.')">
+        <img src="1000183111.png" alt="📖">
+    </div>
+
+    <script>
+        let currentMode = 'signin';
+
+        // Pre-loaded access profile arrays for quick terminal simulation
+        if (!localStorage.getItem('users')) {
+            const defaultUsers = [
+                { email: 'jax16979@gmail.com', password: 'pass' },
+                { email: 'kasambajesse@gmail.com', password: 'password123' }
+            ];
+            localStorage.setItem('users', JSON.stringify(defaultUsers));
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            const tabSignIn = document.getElementById('tab-signin');
+            const tabSignUp = document.getElementById('tab-signup');
+            const emailLabel = document.getElementById('email-label');
+            const submitBtn = document.getElementById('submit-btn');
+            document.getElementById('feedback-log').innerHTML = '';
+
+            if (mode === 'signin') {
+                tabSignIn.classList.add('active');
+                tabSignUp.classList.remove('remove');
+                emailLabel.innerText = "Institutional Email Node";
+                submitBtn.innerText = "Boot Platform Node";
+            } else {
+                tabSignUp.classList.add('active');
+                tabSignIn.classList.remove('active');
+                emailLabel.innerText = "Register Email Node";
+                submitBtn.innerText = "Provision System Profile";
+            }
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const feedback = document.getElementById('feedback-log');
+            
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (currentMode === 'signin') {
+                const matchedUser = users.find(u => u.email === email && u.password === password);
+                if (matchedUser) {
+                    feedback.innerHTML = `<span class="success-msg">✔ Access Granted! Connecting Layer Core...</span>`;
+                    setTimeout(() => {
+                        // Dynamically links to your hosted sub-folder file
+                        window.location.href = 'dashboard.html'; 
+                    }, 1000);
+                } else {
+                    feedback.innerHTML = `<span class="error-msg">❌ Credentials mismatch. Access Denied.</span>`;
+                }
+            } else {
+                const exists = users.some(u => u.email === email);
+                if (exists) {
+                    feedback.innerHTML = `<span class="error-msg">❌ Email node already mapped in decentralized record.</span>`;
+                } else {
+                    users.push({ email, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    feedback.innerHTML = `<span class="success-msg">✔ Profile provisioned! Use your new credentials to sign in.</span>`;
+                    setTimeout(() => switchTab('signin'), 1500);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
