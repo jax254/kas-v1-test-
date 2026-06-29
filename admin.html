@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS - Master Security Command Control Engine</title>
+    <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --neon-green: #4ade80;
+            --cyber-dark: #020617;
+            --terminal-box: rgba(15, 23, 42, 0.95);
+            --neon-purple: #9333ea;
+            --neon-alert: #ef4444;
+            --scholar-gold: #fbbf24;
+        }
+
+        body { 
+            font-family: 'Courier New', Courier, monospace; 
+            background: var(--cyber-dark);
+            color: #f8fafc; 
+            margin: 0; 
+            padding: 30px; 
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(74, 222, 128, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(74, 222, 128, 0.02) 1px, transparent 1px);
+            background-size: 35px 35px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .master-panel-container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--terminal-box);
+            border: 2px solid var(--neon-green);
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(74, 222, 128, 0.15);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            background: #061e14;
+            padding: 20px;
+            border-bottom: 2px solid var(--neon-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--neon-green);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        .panel-tabs {
+            display: flex;
+            background: #020b07;
+            border-bottom: 1px solid #1e3a1f;
+        }
+
+        .panel-tabs span {
+            padding: 15px 20px;
+            cursor: pointer;
+            color: #6b7280;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: 0.2s;
+            border-right: 1px solid #1e3a1f;
+        }
+
+        .panel-tabs span:hover {
+            color: var(--neon-green);
+            background: rgba(74, 222, 128, 0.05);
+        }
+
+        .panel-tabs span.active {
+            color: var(--neon-green);
+            background: #061e14;
+            border-bottom: 2px solid var(--neon-green);
+        }
+
+        .panel-body {
+            padding: 25px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .crypto-entry-card {
+            background: #0b130e;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--neon-green);
+            margin-bottom: 12px;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            padding: 15px 25px;
+            background: #040a07;
+            border-top: 1px solid #1e3a1f;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #1e3a1f;
+            background: #020604;
+            color: #fff;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+
+        input:focus {
+            border-color: var(--neon-green);
+            outline: none;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.3);
+        }
+
+        .btn-send {
+            padding: 12px 25px;
+            background: var(--neon-green);
+            color: #020617;
+            border: none;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: 0.3s;
+        }
+
+        .btn-send:hover {
+            background: #34d399;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .badge-tag {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="cyber-grid"></div>
+
+<div class="master-panel-container">
+    <div class="panel-header">
+        <h1>⚙️ QUANTUM COMMAND CORE // SECURE ENGINE</h1>
+        <span style="color: var(--neon-green); font-size: 12px;" id="systemClock">SYSTEM STATUS: LIVE</span>
+    </div>
+
+    <div class="panel-tabs">
+        <span id="tabDir" class="active" onclick="switchTab('directory')">🔒 PROTECTED CLIENTS</span>
+        <span id="tabComms" onclick="switchTab('comms')">💬 SUB-ADMIN CHAT INTERCOMMS</span>
+        <span id="tabTickets" onclick="switchTab('tickets')">📥 HELP & SUGGESTION TICKETS</span>
+        <span id="tabLogs" onclick="switchTab('logs')">📊 SECURITY ACTIVITY LOGS</span>
+    </div>
+
+    <div class="panel-body" id="panelConsoleBody">
+        </div>
+
+    <div class="input-row" id="panelActionRow" style="display: none;">
+        <input type="text" id="adminConsoleInput" placeholder="Broadcast operational data stream to linked sub-admins...">
+        <button class="btn-send" onclick="transmitIntercomLog()">TRANSMIT</button>
+    </div>
+</div>
+
+<script>
+    let activeTab = 'directory';
+
+    // Cryptographic Mash Hashing (Obscuring Admin Dashboard View From External Attackers)
+    function runPayloadCryptoCipher(inputString) {
+        if(!inputString) return "EMPTY_NODE";
+        let numericAccumulator = 0;
+        for (let i = 0; i < inputString.length; i++) {
+            numericAccumulator = (numericAccumulator << 5) - numericAccumulator + inputString.charCodeAt(i);
+            numericAccumulator |= 0; 
+        }
+        return "ENC_HASH_" + Math.abs(numericAccumulator).toString(16) + btoa(inputString).substring(0, 6).toLowerCase();
+    }
+
+    // Dynamic Clock Output
+    setInterval(() => {
+        document.getElementById('systemClock').innerText = "LIVE NODE // " + new Date().toLocaleTimeString();
+    }, 1000);
+
+    function switchTab(target) {
+        activeTab = target;
+        document.getElementById('tabDir').className = target === 'directory' ? 'active' : '';
+        document.getElementById('tabComms').className = target === 'comms' ? 'active' : '';
+        document.getElementById('tabTickets').className = target === 'tickets' ? 'active' : '';
+        document.getElementById('tabLogs').className = target === 'logs' ? 'active' : '';
+        renderConsoleLayoutData();
+    }
+
+    function renderConsoleLayoutData() {
+        const body = document.getElementById('panelConsoleBody');
+        const actionRow = document.getElementById('panelActionRow');
+        body.innerHTML = "";
+        actionRow.style.display = "none";
+
+        if (activeTab === 'directory') {
+            body.innerHTML = "<h3>🔑 RECOGNIZED SYSTEM ACCOUNTS (CRYPTOGRAPHIC PROTECTION LAYER)</h3><p style='color:#64748b; font-size:12px; margin-bottom:20px;'>Client identifiers are automatically protected right at entry level. Raw metrics remain invisible to local administrators and remote threat targets.</p>";
+            let userFound = false;
+            for (let i = 0; i < localStorage.length; i++) {
+                let trackingKey = localStorage.key(i);
+                if(trackingKey.startsWith("user_")) {
+                    userFound = true;
+                    let clearEmail = trackingKey.replace("user_", "");
+                    let clearPassword = localStorage.getItem(trackingKey);
+
+                    body.innerHTML += `
+                        <div class="crypto-entry-card">
+                            <strong>SYSTEM ID TOKEN:</strong> ${runPayloadCryptoCipher(clearEmail)} <span class="badge-tag">MASKED</span><br>
+                            <span style="color:#64748b;">[CIPHERED DATA FIELD]:</span> ${runPayloadCryptoCipher(clearPassword)}
+                        </div>
+                    `;
+                }
+            }
+            if(!userFound) body.innerHTML += "<span style='color:#475569;'>No student identities registered in terminal block memory.</span>";
+        }
+        else if (activeTab === 'comms') {
+            actionRow.style.display = "flex";
+            body.innerHTML = "<h3>💬 MASTER & SUB-ADMINISTRATOR CRYPTO CHAT LINK</h3><br>";
+            let messageStream = JSON.parse(localStorage.getItem('admin_intercomms_payload') || "[]");
+            if(messageStream.length === 0) body.innerHTML += "<span style='color:#475569;'>Intercom network clear. Transmit administrative coordinates below.</span>";
+            messageStream.forEach(msg => {
+                body.innerHTML += `
+                    <div style="padding:8px 0; border-bottom:1px dashed #14532d;">
+                        <span style="color:var(--neon-green);">[${msg.timestamp}] Admin_Node_Secure:</span> ${msg.text}
+                    </div>
+                `;
+            });
+        }
+        else if (activeTab === 'tickets') {
+            body.innerHTML = "<h3>📥 SUBMITTED CLIENT HELPDESK & SUGGESTION TICKETS</h3><br>";
+            let ticketQueue = JSON.parse(localStorage.getItem('platform_feedback_store') || "[]");
+            if(ticketQueue.length === 0) body.innerHTML += "<span style='color:#475569;'>Zero active support queries or layout suggestions logged.</span>";
+            ticketQueue.forEach((ticket, position) => {
+                body.innerHTML += `
+                    <div class="crypto-entry-card" style="border-color: var(--neon-purple);">
+                        <strong>SENDER KEY:</strong> ${runPayloadCryptoCipher(ticket.user)}<br>
+                        <strong>SUGGESTION/ISSUE PAYLOAD:</strong> "${ticket.message}"<br>
+                        <button style="background:var(--neon-alert); color:white; font-size:10px; border:none; padding:4px 8px; border-radius:4px; margin-top:8px; cursor:pointer;" onclick="clearProcessedTicket(${position})">SOLVE & PURGE RECORD</button>
+                    </div>
+                `;
+            });
+        }
+        else if (activeTab === 'logs') {
+            body.innerHTML = "<h3>📊 COMPLETE PLATFORM TRANSACTION & MOVEMENT RECORDS</h3><br>";
+            let ledger = JSON.parse(localStorage.getItem('system_traffic_ledger') || "[]");
+            if(ledger.length === 0) body.innerHTML += "<span style='color:#475569;'>Operational traffic files unrecorded.</span>";
+            ledger.reverse().forEach(log => {
+                body.innerHTML += `
+                    <div style="padding:6px 0; border-bottom:1px solid #111827; font-size:12px;">
+                        <span style="color:var(--neon-blue);">[${log.time}]</span> <strong>${runPayloadCryptoCipher(log.identity)}</strong> performed action: <span style="color:#cbd5e1;">${log.action}</span>
+                    </div>
+                `;
+            });
+        }
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function transmitIntercomLog() {
+        const field = document.getElementById('adminConsoleInput');
+        const text = field.value.trim();
+        if(!text) return;
+
+        let logs = JSON.parse(localStorage.getItem('admin_intercomms_payload') || "[]");
+        logs.push({ timestamp: new Date().toLocaleTimeString(), text: text });
+        localStorage.setItem('admin_intercomms_payload', JSON.stringify(logs));
+        field.value = "";
+        renderConsoleLayoutData();
+    }
+
+    function clearProcessedTicket(targetIndex) {
+        let activeTickets = JSON.parse(localStorage.getItem('platform_feedback_store') || "[]");
+        activeTickets.splice(targetIndex, 1);
+        localStorage.setItem('platform_feedback_store', JSON.stringify(activeTickets));
+        renderConsoleLayoutData();
+    }
+
+    // Initial Bootstrap
+    renderConsoleLayoutData();
+</script>
+</body>
+</html>
