@@ -343,12 +343,32 @@ function executeSecureRedirection() {
         return;
     }
     
-    // Notice: We completely dropped &reference here.
-    // Payhero will automatically assign a clean system code on load to avoid Safaricom API drops.
-    const targetEndpoint = `https://lipwa.link/10354?amount=${amount}&phone=${phone}`;
-    
-    alert(`Redirecting safely... If Payhero shows an error, manually click 'Pay via M-PESA' inside their checkout interface.`);
-    window.location.href = targetEndpoint;
+    alert("Initiating M-Pesa payment... Please watch for the STK PIN prompt on your phone.");
+
+    // Connected directly to your live Render server!
+    fetch('https://mykas-backend.onrender.com/api/pay', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            phone: phone,
+            amount: amount,
+            reference: "myKas Payment"
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("STK Push sent successfully! Enter your PIN to complete clearance.");
+        } else {
+            alert("Payment failed: " + (data.error || "Unknown response error"));
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Error connecting to payment server. Please try again.");
+    });
 }
 
 function simulateSuccessfulPayment() {
@@ -397,3 +417,5 @@ document.onkeydown = function(e) {
 </script>
 </body>
 </html>
+
+
