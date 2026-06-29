@@ -346,7 +346,7 @@ function executeSecureRedirection() {
     alert("Initiating M-Pesa payment... Please watch for the STK PIN prompt on your phone.");
 
     // Connected directly to your live Render server!
-    fetch('https://mykas-backend.onrender.com/api/pay', {
+    fetch('https://mykas-backend.onrender.com/api/pay?v=2', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
