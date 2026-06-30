@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KAS - Knowledge And Skills</title>
+</head>
+<body>
+    <header>
+        <h1>KAS</h1>
+        <button id="toggleUI">Switch Interface</button>
+    </header>
+    <main>
+        <div id="search-container">
+            <input type="text" placeholder="Search knowledge...">
+        </div>
+        <div id="prudence-mascot">
+            <p>I am Prudence. How can I help you learn today?</p>
+            <button>Ask Prudence</button>
+        </div>
+    </main>
+
+    <script>
+        const toggleBtn = document.getElementById('toggleUI');
+        toggleBtn.addEventListener('click', () => {
+            const currentMode = localStorage.getItem('uiMode') === 'rich' ? 'simple' : 'rich';
+            localStorage.setItem('uiMode', currentMode);
+            location.reload();
+        });
+    </script>
+</body>
+</html>
