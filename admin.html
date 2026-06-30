@@ -1,0 +1,147 @@
+"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandNavy: '#0F172A',
+                        brandLight: '#F8FAFC',
+                        brandCyan: '#0EA5E9',
+                        brandYellow: '#F59E0B',
+                        superAdminGold: '#D9B310'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brandLight text-brandNavy font-sans antialiased">
+
+    <!-- LOGIN SCREEN -->
+    <div id="admin-login-screen" class="fixed inset-0 bg-brandNavy z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-brandYellow text-2xl">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold mb-1">Admin Portal Access</h2>
+            <p class="text-slate-400 text-sm mb-6">Enter your securely provisioned admin PIN</p>
+            
+            <div class="mb-4">
+                <input id="admin-pin-input" type="password" maxlength="6" placeholder="••••••" 
+                    class="w-full text-center tracking-widest text-3xl font-bold py-3 border-2 border-slate-200 rounded-2xl focus:border-brandCyan focus:outline-none bg-slate-50">
+                <p id="login-error-msg" class="text-rose-500 text-xs font-semibold mt-2 hidden">Invalid credentials entered.</p>
+            </div>
+            
+            <button onclick="attemptAdminLogin()" class="w-full bg-brandNavy text-white font-bold py-3 rounded-2xl hover:bg-slate-800 transition">
+                Verify Identity
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN CONTROL PANEL (Hidden until authenticated) -->
+    <div id="admin-dashboard-layout" class="hidden min-h-screen flex flex-col md:flex-row">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-64 bg-brandNavy text-slate-300 p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-3 border-b border-slate-800 pb-6 mb-6">
+                    <div id="admin-role-badge" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"></div>
+                    <div>
+                        <h3 id="current-admin-name" class="font-bold text-white leading-tight">Loading...</h3>
+                        <span id="current-admin-status" class="text-xs font-semibold tracking-wider uppercase">Loading...</span>
+                    </div>
+                </div>
+                
+                <nav class="space-y-2">
+                    <a href="#" onclick="switchTab('overview')" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 text-white font-medium transition">
+                        <i class="fa-solid fa-chart-pie w-5"></i> System Overview
+                    </a>
+                    <a href="#" onclick="switchTab('admins')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-user-shield w-5"></i> Manage Admins
+                    </a>
+                    <a href="#" onclick="switchTab('approvals')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition relative">
+                        <i class="fa-solid fa-circle-check w-5"></i> Pending Approvals
+                        <span id="approval-badge-count" class="absolute right-4 bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full font-bold hidden">0</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <button onclick="logoutAdmin()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-rose-950 text-rose-400 font-medium transition text-left mt-8">
+                <i class="fa-solid fa-right-from-bracket w-5"></i> Secure Session Exit
+            </button>
+        </aside>
+
+        <!-- MAIN PANEL BODY -->
+        <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+            
+            <!-- TAB: OVERVIEW -->
+            <section id="tab-overview" class="space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold tracking-tight">System Overview</h1>
+                        <p class="text-slate-500 text-sm">Platform runtime state, registration volumes, and transaction monitors.</p>
+                    </div>
+                    <div id="super-admin-broadcast-banner" class="hidden bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 flex items-center gap-2 text-xs font-semibold text-amber-800">
+                        <i class="fa-solid fa-crown text-amber-500 animate-pulse"></i> Active Profile: Super Admin Authority
+                    </div>
+                </div>
+
+                <!-- KEY INSIGHT METRICS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Gross Premium Revenue</div>
+                        <div class="text-3xl font-extrabold">KES <span id="stat-revenue">0.00</span></div>
+                        <p class="text-xs text-emerald-500 mt-2 font-medium"><i class="fa-solid fa-arrow-trend-up"></i> Realtime calculation engine active</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Active Premium Enrolments</div>
+                        <div class="text-3xl font-extrabold" id="stat-subscribers">0</div>
+                        <p class="text-xs text-slate-500 mt-2">Aggregated active subscription profiles</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Active Operational Admins</div>
+                        <div class="text-3xl font-extrabold" id="stat-admins-count">1</div>
+                        <p class="text-xs text-slate-500 mt-2">Active validation checkpoints across system</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: MANAGE ADMINS -->
+            <section id="tab-admins" class="space-y-6 hidden">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">System Infrastructure Admins</h1>
+                    <p class="text-slate-500 text-sm">Only the authenticated Super Admin can provision or remove sub-admin operational identities.</p>
+                </div>
+
+                <!-- SUB-ADMIN PROVISIONING CONTROL -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-xl">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-user-plus text-brandCyan"></i> Provision Sub-Admin Profile</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Admin Profile Name</label>
+                            <input id="new-admin-name" type="text" placeholder="e.g. Officer Jane Doe" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brandCyan text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">6-Digit Access PIN</label>
+                            <input id="new-admin-pin" type="password" maxlength="6" placeholder="••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brandCyan text-sm tracking-widest font-bold">
+                        </div>
+                        <button onclick="requestAddAdmin()" class="w-full bg-brandCyan text-white font-bold py-2.5 rounded-xl hover:bg-sky-600 transition text-sm">
+                            Initiate Core Provisioning Proposal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ADMIN REGISTRY TABLE -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 font-bold text-sm tracking-wide">Registered Admin Registries</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 font-semibold bg-slate-50/50">
+                                    <th class="p-4">Admin Name</th>
+                                    <th class="p-4">Authorization Scope</th>
+                                    <th class="p-4">Assigned Pin Access</th>
+                                    <th class="p-4 text-right">Administrative Interventions</th>
+                                </tr>
+                            </thead>
