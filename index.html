@@ -41,19 +41,34 @@
             <button onclick="submitSuggestion()" class="w-full bg-cyan-600 py-3 rounded-xl font-bold">SUBMIT TO ADMIN</button>
         </div>
     </div>
+<script type="module">
+  // 1. Import your config and Firebase SDKs
+  import { firebaseConfig } from './auth-config.js';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-    <script src="auth-config.js"></script>
-    <script>
-        function submitSuggestion() {
-            const text = document.getElementById('suggestion-text').value;
-            // Send this to your Admin Panel via fetch()
-            alert("Suggestion sent to KAS Sanctum!");
-            toggleModal('suggestion-modal');
-        }
+  // 2. Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-        function toggleModal(id) {
-            document.getElementById(id).classList.toggle('hidden');
-        }
-    </script>
+  // 3. Make these functions globally available for your buttons
+  window.submitSuggestion = function() {
+      const text = document.getElementById('suggestion-text').value;
+      alert("Suggestion sent: " + text);
+      toggleModal('suggestion-modal');
+  };
+
+  window.toggleModal = function(id) {
+      document.getElementById(id).classList.toggle('hidden');
+  };
+
+  window.handleLogin = function() {
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider).then(() => {
+          alert("Logged in successfully!");
+      });
+  };
+</script>
+
 </body>
 </html>
