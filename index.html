@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAS | Secure Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #020617; color: white; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 0.1); }
+        .professor-speaking { animation: talk 0.5s infinite; filter: drop-shadow(0 0 10px #0ea5e9); }
+        @keyframes talk { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+
+    <nav class="glass flex justify-between items-center px-8 py-6">
+        <div class="text-2xl font-black text-cyan-400">KAS<span class="text-white">HUB</span></div>
+        <button id="auth-btn" class="bg-cyan-600 px-6 py-2 rounded-xl text-xs font-bold hover:bg-cyan-500 transition">GOOGLE SIGN IN</button>
+    </nav>
+
+    <main class="max-w-4xl mx-auto py-20 px-6 text-center">
+        <div id="prudence-avatar" class="text-6xl mb-6 cursor-pointer" onclick="toggleVoice()">🎓</div>
+        <div id="transcript-box" class="glass p-4 rounded-2xl mb-8 text-slate-400 italic">"Hello, I am Prudence. Click me to speak or type your inquiry below."</div>
+        
+        <div class="glass p-2 rounded-2xl flex border border-white/10">
+            <input type="text" id="user-input" class="bg-transparent flex-1 px-4 py-3 focus:outline-none" placeholder="Ask about university, business, or life hacks...">
+            <button onclick="processInput()" class="bg-cyan-600 px-8 py-3 rounded-xl font-bold">SEND</button>
+        </div>
+    </main>
+
+    <button onclick="toggleModal('suggestion-modal')" class="fixed bottom-8 left-8 w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-white/10 transition">
+        <i class="fa-solid fa-comment-dots text-cyan-400"></i>
+    </button>
+
+    <div id="suggestion-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="glass p-8 rounded-3xl max-w-sm w-full mx-4">
+            <h3 class="font-bold mb-4">Send Suggestion</h3>
+            <textarea id="suggestion-text" class="w-full bg-black/20 p-4 rounded-xl mb-4 focus:outline-none" placeholder="How can I improve?"></textarea>
+            <button onclick="submitSuggestion()" class="w-full bg-cyan-600 py-3 rounded-xl font-bold">SUBMIT TO ADMIN</button>
+        </div>
+    </div>
+
+    <script src="auth-config.js"></script>
+    <script>
+        function submitSuggestion() {
+            const text = document.getElementById('suggestion-text').value;
+            // Send this to your Admin Panel via fetch()
+            alert("Suggestion sent to KAS Sanctum!");
+            toggleModal('suggestion-modal');
+        }
+
+        function toggleModal(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
