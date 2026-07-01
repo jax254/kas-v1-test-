@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prudence - Admin Control Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+
+    <!-- Admin Wrapper Grid -->
+    <div class="admin-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-shield-halved"></i> Prudence Admin
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active"><a href="#"><i class="fa-solid fa-chart-pie"></i> Overview</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> View Live Site</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Dashboard Workspace -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h2>Dashboard Overview</h2>
+                <div class="user-profile-status">
+                    <span class="status-indicator online"></span>
+                    <span>System Owner Studio</span>
+                </div>
+            </header>
+
+            <!-- Metrics Cards Panel -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Active Users</h3>
+                    <p class="metric-number">1,240</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Active Admins</h3>
+                    <p class="metric-number" id="adminCount">3</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Database Queries</h3>
+                    <p class="metric-number">99.9% Uptime</p>
+                </div>
+            </section>
+
+            <!-- Multiple Admins and Permissions Workspace -->
+            <section class="admin-management-section">
+                <div class="section-card">
+                    <div class="card-header">
+                        <h3>Team Administrators & Roles</h3>
+                        <button class="btn btn-small" onclick="openAddAdminModal()"><i class="fa-solid fa-user-plus"></i> Add Admin</button>
+                    </div>
+                    <p class="section-subtitle">Configure collaborative access keys and assign limited operational boundaries to system users.</p>
+                    
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Admin Name</th>
+                                    <th>Email Reference</th>
+                                    <th>Assigned Role</th>
+                                    <th>Access Bounds</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody">
+                                <!-- Dynamic entries rendered via S.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Admin Provision Modal Overlay -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Provision New Administrative Account</h3>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeAddAdminModal()"></i>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newAdminName">Full Name</label>
+                    <input type="text" id="newAdminName" placeholder="e.g., Jane Doe">
+                </div>
+                <div class="form-group">
+                    <label for="newAdminEmail">Email Address</label>
+                    <input type="email" id="newAdminEmail" placeholder="name@university.com">
+                </div>
+                <div class="form-group">
+                    <label for="newAdminRole">System Authorization Level</label>
+                    <select id="newAdminRole">
+                        <option value="Super Admin">Super Admin (Full Root System Access)</option>
+                        <option value="Editor - Limited">Editor (Modify Course Material Only)</option>
+                        <option value="Moderator - Limited">Moderator (Manage Chatbot & Users Only)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="saveNewAdminAccount()">Authorize Team Member</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="S.js"></script>
+</body>
+</html>
