@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prudence - Academic Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for clean iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><i class="fa-solid fa-graduation-cap"></i> Prudence</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="admin.html">Admin Dashboard</a></li>
+                <li><div id="google-signin-btn"></div></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Hero Section -->
+    <main class="hero-section">
+        <div class="hero-content">
+            <h1>Elevate Your Academic Journey</h1>
+            <p>Welcome to Prudence, a dedicated space built specifically for university students to streamline learning, share resources, and master course units effectively.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="toggleChat()">Chat with Prudence</button>
+                <a href="admin.html" class="btn btn-secondary">Go to Admin Panel</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Prudence Chatbot Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header" onclick="toggleChat()">
+            <div class="chat-header-title">
+                <i class="fa-solid fa-robot"></i>
+                <span>Prudence AI Assistant</span>
+            </div>
+            <i class="fa-solid fa-chevron-down" id="chatToggleIcon"></i>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-message">
+                Hello! I am Prudence, your academic assistant. How can I help you with your university study tracks today?
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Ask something about your courses..." onkeypress="handleChatKey(event)">
+            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Script Integration -->
+    <script src="S.js"></script>
+</body>
+</html>
